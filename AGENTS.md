@@ -19,7 +19,7 @@ Jason's direct request authorizes the work it describes, across code, infrastruc
 
 Owns:
 - `profile/README.md`, the public org landing page.
-- This guidance: `AGENTS.md`, plus `CLAUDE.md`, a regular one-line file holding `@AGENTS.md` (Claude Code's import) so Claude reads this file too.
+- This guidance: `AGENTS.md`, the only agent-instruction file. Claude Code and Codex both read it natively; the repo tracks no `CLAUDE.md`.
 
 Adjacent lanes — change these in their owner, not here:
 - Verdify positioning, service names and the verdify.ai pages the profile links to → `VerdifyConsultancy/verdify-www` (service names in `src/data/site-shell.ts`, routes under `src/pages/`). Take profile wording from there rather than writing new copy here.
@@ -29,7 +29,7 @@ Adjacent lanes — change these in their owner, not here:
 
 In transition — change it where it lives today; put new work in the target lane:
 - Profile copy: `profile/README.md` has its own tagline and service names, which have drifted from verdify.ai. Edit the profile here, taking the wording from verdify-www ([jvallery/agents#4492](https://github.com/jvallery/agents/issues/4492)).
-- Pod briefing: at boot the repo pod appends its managed briefing to the tracked `AGENTS.md` and, for Claude, to `CLAUDE.md`, so Claude in the pod reads it twice (once in `CLAUDE.md`, once through its `@AGENTS.md` import). The fix that moves it out of worktrees into user-level files belongs to `jvallery/agents` and is still open ([jvallery/agents#4453](https://github.com/jvallery/agents/issues/4453)); until it lands, follow the staging rule under Hazards.
+- Pod briefing: at boot the repo pod appends its managed briefing to the tracked `AGENTS.md` and, for Claude agents, still writes a briefing-only `CLAUDE.md` into the worktree. That file hides `AGENTS.md` from Claude, so until a pod runs the runtime change that stops writing it ([jvallery/agents#4453](https://github.com/jvallery/agents/issues/4453), shipping with the next runtime rollout), Claude agents in a restarted pod see only the briefing. The runtime belongs to `jvallery/agents`; here, follow the staging rule under Hazards.
 
 ## Deliver and verify
 
@@ -41,9 +41,9 @@ In transition — change it where it lives today; put new work in the target lan
 
 - Hazards:
   - The repo is public, so every commit is world-readable. Commit no internal hostnames, IPs, namespaces, Secret names or other private estate detail.
-  - The pod's managed briefing in `AGENTS.md` and `CLAUDE.md` (between the `BEGIN`/`END agent-fleet operating-environment briefing` comment markers) lists internal topology, and only a best-effort `git update-index --skip-worktree` keeps it out of commits. Stage files by name, not `git add -A`, and read `git diff --cached` before committing. Never write the full BEGIN marker text into a tracked file: the pod detects its block by substring and replaces only an exact marker line, so a quoted marker blocks injection and a bare marker line can swallow the lines after it.
-  - Keep `CLAUDE.md` the regular one-line `@AGENTS.md` import, not a symlink, and put guidance in `AGENTS.md`. The repo-pod runtime's context converge turns a newly introduced `CLAUDE.md` or `AGENTS.md` symlink into a regular file holding the link text, treats it as local work and stops fast-forwarding the pod clone ([jvallery/agents#4453](https://github.com/jvallery/agents/issues/4453)).
+  - The pod's managed briefing (between the `BEGIN`/`END agent-fleet operating-environment briefing` comment markers) lists internal topology. In `AGENTS.md` only a best-effort `git update-index --skip-worktree` keeps it out of commits, and the briefing-only worktree `CLAUDE.md` is untracked, so `git add -A` would commit it. Stage files by name, not `git add -A`, read `git diff --cached` before committing, and never commit a `CLAUDE.md`. Never write the full BEGIN marker text into a tracked file: the pod detects its block by substring and replaces only an exact marker line, so a quoted marker blocks injection and a bare marker line can swallow the lines after it.
+  - `AGENTS.md` is the only agent-instruction file: add no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` at any depth. Claude Code (2.1.277 and later) reads `AGENTS.md` natively only when none of those exists in the working directory or any ancestor. Keep `AGENTS.md` a regular file, never a symlink: the repo-pod runtime's context converge turns a tracked context file that becomes a symlink into a regular file holding the link text, treats it as local work and stops fast-forwarding the pod clone.
   - Add no `workflow-templates/` or org-default community health files here. GitHub offers or applies them to every org repo that lacks its own file, so each one is an org-wide change, and the estate lane map excludes them from this repo. CI for this repo is declared in `.agent-fleet/ci.yaml` for fleet CI, not GitHub Actions.
 - Focused commands:
   - `bash -c "$(yq '.checks.steps[] | select(.name == "organization-files") | .command' .agent-fleet/ci.yaml)"` runs the CI check locally (every change).
-  - `git ls-files -s AGENTS.md CLAUDE.md` shows both as mode `100644`, and `git show :CLAUDE.md` prints only `@AGENTS.md` (guidance edits; both read the index, so the pod's appended briefing does not show).
+  - `git ls-files -s AGENTS.md` shows mode `100644`, and `git ls-files | grep -E '(^|/)CLAUDE(\.local)?\.md$'` prints nothing (guidance edits; both read the index, so the pod's appended briefing and its untracked `CLAUDE.md` do not show).
