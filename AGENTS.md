@@ -28,7 +28,6 @@ Adjacent lanes — change these in their owner, not here:
 - Issue and PR templates, CONTRIBUTING, SECURITY and CODE_OF_CONDUCT → each repo keeps its own.
 
 In transition — change it where it lives today; put new work in the target lane:
-- Profile copy: `profile/README.md` has its own tagline and service names, which have drifted from verdify.ai. Edit the profile here, taking the wording from verdify-www ([jvallery/agents#4492](https://github.com/jvallery/agents/issues/4492)).
 - Pod briefing: at boot the repo pod appends its managed briefing to the tracked `AGENTS.md` and, for Claude agents, still writes a briefing-only `CLAUDE.md` into the worktree. That file hides `AGENTS.md` from Claude, so until a pod runs the runtime change that stops writing it ([jvallery/agents#4453](https://github.com/jvallery/agents/issues/4453), shipping with the next runtime rollout), Claude agents in a restarted pod see only the briefing. The runtime belongs to `jvallery/agents`; here, follow the staging rule under Hazards.
 
 ## Deliver and verify
