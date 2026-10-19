@@ -13,22 +13,39 @@ Jason's direct request authorizes the work it describes, across code, infrastruc
 - Verify the requested end state from the authoritative source or live behavior; passing CI alone does not prove a deployment works. Report what changed, what was checked, and any remaining limitation.
 - Search narrowly, batch independent lookups, reuse current evidence, and keep plans and updates brief.
 - Use existing credentials without printing, committing, or logging secret values or Kubernetes Secret data; rotate or revoke credentials only when Jason asks.
+
+### Execution location and resource use
+
+- Use the Mac for lightweight editing, orchestration, source inspection and small bounded checks. Run CPU- or memory-intensive tests, experiments, simulations, replay, training, builds and long-running processes as containerized workloads in the authorized k3s environment, through the repository's supported CI/GitOps or job-submission path. Colima, Docker Desktop and other container VMs on the Mac still consume the Mac's resources and do not satisfy this requirement.
+- Classify work by its expected workload, using existing repository and estate resource thresholds: sustained CPU saturation, substantial memory or dataset use, broad parallel suites, image compilation and prolonged processing require offloading. A command listed as "local" or "offline" describes a workflow, not permission to run intensive work on the Mac. If size is uncertain, inspect the workload and use a bounded pilot in the authorized cluster path before expanding it; do not benchmark the heavy workload on the Mac to decide.
+- Before execution, confirm the authorized cluster/context, target namespace, supported submission path, dependencies and data access. Base placement on current k3s allocatable CPU/memory, existing resource requests/limits, pod working sets, scheduler and quota admission, node pressure and existing workload owners/admission reservations. Physical-host diagnostics are distinct from Kubernetes schedulable capacity: a Proxmox host MemAvailable alert alone does not prohibit k3s placement. Preserve existing fixed-allocation and control-plane safety rules, and healthy and recovery capacity. Use bounded concurrency, deadlines and stable job/operation IDs; retain outputs and logs in approved custody and verify terminal completion and output integrity before claiming success.
+- Keep experiments isolated from production workloads and storage side effects unless Jason explicitly authorizes those effects. Use existing approved identities and access; do not create credentials, RBAC, security settings, privileged workloads or persistent access to enable an experiment. Keep secrets out of manifests and logs. Clean up only the job's disposable resources through the approved lifecycle; preserve retained data, outputs and shared PVCs.
+- If the supported cluster path, required access, ownership/admission clearance or safe capacity is unavailable, stop the intensive work and report the exact blocker. Do not silently fall back to intensive execution on the Mac. Work that inherently requires local execution needs an explicit, task-scoped exception approved by Jason before it runs, with its workload bounds stated. This policy is the estate minimum: preserve stronger repository/subdirectory restrictions, existing holds and data-custody rules. A repository command or general task authorization does not override this placement policy; only Jason's explicit scoped exception does.
 <!-- estate-contract:end -->
 
-## Ownership
+## Owns
 
-Owns:
+Per-item detail is in [`OWNERSHIP.md`](OWNERSHIP.md); the one-owner-per-item record is the [central estate inventory](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/ESTATE-INVENTORY.md) in `jvallery/agents`, with this repository's [owner page](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/estate/VerdifyConsultancy__.github.md). Change both in the same change set.
+
 - `profile/README.md`, the public org landing page.
 - This guidance: `AGENTS.md`, the only agent-instruction file. Claude Code and Codex both read it natively; the repo tracks no `CLAUDE.md`.
+- Nothing deployed: no namespace, workload, hostname, image or scheduled job.
 
-Adjacent lanes — change these in their owner, not here:
+## Adjacent lanes
+
+Change these in their owner, not here. Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) §4.1 and §4.3.
+
 - Verdify positioning, service names and the verdify.ai pages the profile links to → `VerdifyConsultancy/verdify-www` (service names in `src/data/site-shell.ts`, routes under `src/pages/`). Take profile wording from there rather than writing new copy here.
 - Verdify Lab (https://lab.verdify.ai) and its greenhouse and control-loop claims → `VerdifyConsultancy/verdify-platform`. The profile links to the lab; architecture detail stays there.
-- `.agent-fleet/ci.yaml`, the repo pod, this repo's registry record and the pod's managed briefing block → `jvallery/agents`. `ci.yaml` is generated from the registry `ci_submission`, so a hand edit is overwritten.
+- `.agent-fleet/ci.yaml` and this repo's registry record (`desired_state: ci-only`, no repo pod) → `jvallery/agents`. `ci.yaml` is generated from the registry `ci_submission`, so a hand edit is overwritten.
+- Organization-level GitHub state (rulesets, branch protection, App installations, org Actions secrets) → `jvallery/agents`.
 - Issue and PR templates, CONTRIBUTING, SECURITY and CODE_OF_CONDUCT → each repo keeps its own.
 
-In transition — change it where it lives today; put new work in the target lane:
-- Pod briefing: at boot the repo pod appends its managed briefing to the tracked `AGENTS.md` and, for Claude agents, still writes a briefing-only `CLAUDE.md` into the worktree. That file hides `AGENTS.md` from Claude, so until a pod runs the runtime change that stops writing it ([jvallery/agents#4453](https://github.com/jvallery/agents/issues/4453), shipping with the next runtime rollout), Claude agents in a restarted pod see only the briefing. The runtime belongs to `jvallery/agents`; here, follow the staging rule under Hazards.
+## In transition
+
+Change it where it lives today; put new work in the target lane.
+
+- Validation: the `organization-files` fleet check publishes no status and `main` has no branch protection; [#2](https://github.com/VerdifyConsultancy/.github/issues/2) wires fleet CI and then makes the check required.
 
 ## Deliver and verify
 
