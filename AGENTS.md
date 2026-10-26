@@ -2,17 +2,18 @@
 
 Source of the VerdifyConsultancy GitHub organization profile: `profile/README.md`, which GitHub renders at https://github.com/VerdifyConsultancy. The repository is public and deploys nothing to the cluster. Lane: **VerdifyConsultancy org profile** — the estate lane map and placement rules live in `jvallery/agents` at `docs/estate/README.md`.
 
-<!-- estate-contract:start — canonical copy lives in /Users/jason/AGENTS.md; keep this block identical in every repo -->
+<!-- estate-contract:start — canonical copy is AGENTS.md in jvallery/home-dotfiles (the operator Mac's root contract); keep this block identical in every repo -->
 ## Operating contract
 
 Jason's direct request authorizes the work it describes, across code, infrastructure, and Jason-owned services in scope, through delivery and verification of the real end state. Ask only when an unresolved ambiguity could materially change the outcome. Add approval, review, issue/PR, or planning steps only when Jason asks for them or a branch rule enforces them; process descriptions in repository docs are context, not gates.
 
 - Make the smallest complete change in the repository that owns the thing being changed (see Ownership). Fix forward; prefer rollback when it restores service faster or limits harm. Skip speculative abstractions and unrelated cleanup.
 - Preserve unrelated work; use an isolated worktree when another checkout may be active. Resolve destructive targets exactly and keep practical recovery data.
-- Validate in proportion to risk: the cheapest reliable check of the changed behavior (focused test, direct probe, or readback; docs-only edits need diff/readback). Add tests only for meaningful regression risk: critical behavior, security, data integrity, or subtle logic. Reuse existing CI/CD, honor enforced checks, and add pipelines or gates only for a concrete need in the task.
-- Verify the requested end state from the authoritative source or live behavior; passing CI alone does not prove a deployment works. Report what changed, what was checked, and any remaining limitation.
+- Shared cluster state has one writer at a time. Cordon, drain, node or host restarts and other maintenance writes first take the Lease `kube-system/k3s-planned-maintenance` (estate rule R25), one node or host at a time; never cordon or drain a worker before a CNPG-aware switchover. Never blanket- or prune-sync a SHA-pinned Argo parent; use exact-target syncs.
+- Validate in proportion to risk: the cheapest reliable check of the changed behavior (focused test, direct probe, or readback; docs-only edits need diff/readback). Add tests only for meaningful regression risk: critical behavior, security, data integrity, or subtle logic. Reuse existing CI/CD, honor enforced checks, and add pipelines or gates only for a concrete need in the task. Push to or rebase a PR whose CI is running or green only when GitHub reports a conflict or an enforced check refuses it; a moved base branch alone is not a reason. Regenerate generated files with their registered renderer; never hand-merge them.
+- Verify the requested end state from the authoritative source or live behavior; passing CI alone does not prove a deployment works. Close an issue only when its latest acceptance, including criteria moved in from other issues, holds live; time-gated criteria wait for their gate, and a close-with-carry names a carry issue confirmed open. Report what changed, what was checked, and any remaining limitation.
 - Search narrowly, batch independent lookups, reuse current evidence, and keep plans and updates brief.
-- Use existing credentials without printing, committing, or logging secret values or Kubernetes Secret data; rotate or revoke credentials only when Jason asks.
+- Use existing credentials without printing, committing, or logging secret values or Kubernetes Secret data; rotate or revoke credentials only when Jason asks, after identifying the exact credential by name and ID and confirming every consumer value-blind.
 
 ### Execution location and resource use
 
@@ -38,18 +39,18 @@ Change these in their owner, not here. Lane map and rules: `jvallery/agents` [`d
 - Verdify positioning, service names and the verdify.ai pages the profile links to → `VerdifyConsultancy/verdify-www` (service names in `src/data/site-shell.ts`, routes under `src/pages/`). Take profile wording from there rather than writing new copy here.
 - Verdify Lab (https://lab.verdify.ai) and its greenhouse and control-loop claims → `VerdifyConsultancy/verdify-platform`. The profile links to the lab; architecture detail stays there.
 - `.agent-fleet/ci.yaml` and this repo's registry record (`desired_state: ci-only`, no repo pod) → `jvallery/agents`. `ci.yaml` is generated from the registry `ci_submission`, so a hand edit is overwritten.
-- Organization-level GitHub state (rulesets, branch protection, App installations, org Actions secrets) → `jvallery/agents`.
+- Organization-level GitHub state (rulesets, branch protection, App installations, org Actions secrets) → `jvallery/agents`. That includes org settings and membership, and the accepted exceptions recorded there (fleet control-plane #5145). Do not change org settings, 2FA enforcement or membership from this repo.
 - Issue and PR templates, CONTRIBUTING, SECURITY and CODE_OF_CONDUCT → each repo keeps its own.
 
 ## In transition
 
 Change it where it lives today; put new work in the target lane.
 
-- Validation: the `organization-files` fleet check publishes no status and `main` has no branch protection; [#2](https://github.com/VerdifyConsultancy/.github/issues/2) wires fleet CI and then makes the check required.
+- Validation: the `organization-files` fleet check publishes no status, and `main` is protected but has no required check; [#2](https://github.com/VerdifyConsultancy/.github/issues/2) wires fleet CI and then makes the check required.
 
 ## Deliver and verify
 
-- No deployed runtime: nothing here reaches k3s or Argo CD (registry delivery mode `validate-only`). A merge to `main` publishes `profile/README.md` on the org page at once. `main` has no branch protection or required check; [#2](https://github.com/VerdifyConsultancy/.github/issues/2) tracks wiring fleet CI for this repo and then making `organization-files` required.
+- No deployed runtime: nothing here reaches k3s or Argo CD (registry delivery mode `validate-only`). A merge to `main` publishes `profile/README.md` on the org page at once. `main` is protected (linear history, no force pushes or deletions) but has no required check; [#2](https://github.com/VerdifyConsultancy/.github/issues/2) tracks wiring fleet CI for this repo and then making `organization-files` required.
 - `.agent-fleet/ci.yaml` declares the generated `organization-files` check: whitespace errors in unstaged changes (`git diff --check`), conflict markers outside Markdown, and a YAML parse of every `*.yml`/`*.yaml`. No fleet CI run fires on push or PR and no status is published, so run it locally before every commit, while your edits are still unstaged.
 - Verify a profile change: `gh api repos/VerdifyConsultancy/.github/contents/profile/README.md --jq .sha` equals `git rev-parse HEAD:profile/README.md`, the page at https://github.com/VerdifyConsultancy renders, and every profile link resolves (`curl -sL -o /dev/null -w '%{http_code}\n' <url>` returns 200).
 
