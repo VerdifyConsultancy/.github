@@ -1,6 +1,6 @@
 # VerdifyConsultancy/.github
 
-Source of the VerdifyConsultancy GitHub organization profile: `profile/README.md`, which GitHub renders at https://github.com/VerdifyConsultancy. The repository is public and deploys nothing to the cluster. Lane: **VerdifyConsultancy org profile** — the estate lane map and placement rules live in `jvallery/agents` at `docs/estate/README.md`.
+Source of the VerdifyConsultancy GitHub organization profile: `profile/README.md`, which GitHub renders at https://github.com/VerdifyConsultancy. The repository is public and deploys nothing to the cluster. Lane: **VerdifyConsultancy org profile**, a product content repository that stays in this organization because GitHub renders an organization profile only from that organization's public `.github` repository. The estate lane map and placement rules live in `jvallery/agents` at `docs/estate/README.md` until `jvallery/agents` retires; they are planned to move to `jvallery/estate-platform`.
 
 <!-- estate-contract:start — canonical copy is AGENTS.md in jvallery/home-dotfiles (the operator Mac's root contract); keep this block identical in every repo -->
 ## Operating contract
@@ -26,7 +26,7 @@ Jason's direct request authorizes the work it describes, across code, infrastruc
 
 ## Owns
 
-Per-item detail is in [`OWNERSHIP.md`](OWNERSHIP.md); the one-owner-per-item record is the [central estate inventory](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/ESTATE-INVENTORY.md) in `jvallery/agents`, with this repository's [owner page](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/estate/VerdifyConsultancy__.github.md). Change both in the same change set.
+Per-item detail is in [`OWNERSHIP.md`](OWNERSHIP.md); the one-owner-per-item record is the [central estate inventory](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/ESTATE-INVENTORY.md) in `jvallery/agents`, with this repository's [owner page](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/estate/VerdifyConsultancy__.github.md). Change both in the same change set. The ownership record and its render path are planned to move to `jvallery/estate-platform` when `jvallery/agents` retires; until that lands, they stay in `jvallery/agents`.
 
 - `profile/README.md`, the public org landing page.
 - This guidance: `AGENTS.md`, the only agent-instruction file. Claude Code and Codex both read it natively; the repo tracks no `CLAUDE.md`.
@@ -34,33 +34,31 @@ Per-item detail is in [`OWNERSHIP.md`](OWNERSHIP.md); the one-owner-per-item rec
 
 ## Adjacent lanes
 
-Change these in their owner, not here. Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) §4.1 and §4.3.
+Change these in their owner, not here. Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) §4.1 and §4.3 (planned to move to `jvallery/estate-platform`).
 
-- Verdify positioning, service names and the verdify.ai pages the profile links to → `VerdifyConsultancy/verdify-www` (service names in `src/data/site-shell.ts`, routes under `src/pages/`). Take profile wording from there rather than writing new copy here.
-- Verdify Lab (https://lab.verdify.ai) and its greenhouse and control-loop claims → `VerdifyConsultancy/verdify-platform`. The profile links to the lab; architecture detail stays there.
-- `.agent-fleet/ci.yaml` and this repo's registry record (`desired_state: ci-only`, no repo pod) → `jvallery/agents`. `ci.yaml` is generated from the registry `ci_submission`, so a hand edit is overwritten.
-- Organization-level GitHub state (rulesets, branch protection, App installations, org Actions secrets) → `jvallery/agents`. That includes org settings and membership, and the accepted exceptions recorded there (fleet control-plane #5145). Do not change org settings, 2FA enforcement or membership from this repo.
+- Verdify positioning, service names and the verdify.ai pages the profile links to → `jvallery/verdify-www` (service names in `src/data/site-shell.ts`, routes under `src/pages/`). Take profile wording from there rather than writing new copy here.
+- Verdify Lab (https://lab.verdify.ai) and its greenhouse and control-loop claims → `jvallery/verdify-platform`. The profile links to the lab; architecture detail stays there.
+- This repo's registry record in `jvallery/agents` (`desired_state: ci-only`) and the catalog rows derived from it. Native fleet CI is retired and `.agent-fleet/ci.yaml` was deleted here (#8); the record itself is planned to retire with `jvallery/agents`, not to move.
+- Organization-level GitHub state (rulesets, branch protection, App installations, org Actions secrets) → `jvallery/agents` today, with the governance baseline planned to move to `jvallery/estate-platform`. That includes org settings and membership, and the accepted exceptions recorded there (agents#5145). Do not change org settings, 2FA enforcement or membership from this repo.
 - Issue and PR templates, CONTRIBUTING, SECURITY and CODE_OF_CONDUCT → each repo keeps its own.
 
-## In transition
+## Backlog and standards
 
-Change it where it lives today; put new work in the target lane.
-
-- Validation: the `organization-files` fleet check publishes no status, and `main` is protected but has no required check; [#2](https://github.com/VerdifyConsultancy/.github/issues/2) wires fleet CI and then makes the check required.
+The estate standards register is `docs/estate/STANDARDS.md` in `jvallery/agents` (planned to move to `jvallery/estate-platform`); cite its `STD-` clause ids rather than copying them. Waves are milestones (`W1 Convergence foundations` to `W5 BCDR`), with matching `sprint:w1-convergence` to `sprint:w5-bcdr` labels and one domain label (`conv`, `cicd`, `obs`, `sec`, `ha`, `dr`). Estate epics are issues labeled `epic` in `jvallery/estate-platform`. Every issue follows the estate issue contract (problem, dated evidence, `STD-` clause and bounded target, owner, dependencies, priority, testable acceptance, rollback), and each remediation unit has one canonical issue in the repo that owns the change.
 
 ## Deliver and verify
 
-- No deployed runtime: nothing here reaches k3s or Argo CD (registry delivery mode `validate-only`). A merge to `main` publishes `profile/README.md` on the org page at once. `main` is protected (linear history, no force pushes or deletions) but has no required check; [#2](https://github.com/VerdifyConsultancy/.github/issues/2) tracks wiring fleet CI for this repo and then making `organization-files` required.
-- `ci/check.sh` is the `organization-files` check: whitespace errors in unstaged changes (`git diff --check`), conflict markers outside Markdown, and a YAML parse of every `*.yml`/`*.yaml`. No workflow runs it on push or PR yet and no status is published, so run it locally before every commit, while your edits are still unstaged.
+- No deployed runtime: nothing here reaches k3s or Argo CD, and the repo has no GitHub Actions workflows. A merge to `main` publishes `profile/README.md` on the org page at once. `main` is protected (linear history, no force pushes or deletions) with no required check; the estate standards mandate none for a non-deployed repository, and no VerdifyConsultancy runner set is planned, so no workflow is coming.
+- `ci/check.sh` is an operator-run pre-commit check: whitespace errors in unstaged changes (`git diff --check`), conflict markers outside Markdown, and a YAML parse of every `*.yml`/`*.yaml`. Run it before every commit, while your edits are still unstaged. On a clean checkout it does not check `profile/README.md` at all, so review profile edits by diff.
 - Verify a profile change: `gh api repos/VerdifyConsultancy/.github/contents/profile/README.md --jq .sha` equals `git rev-parse HEAD:profile/README.md`, the page at https://github.com/VerdifyConsultancy renders, and every profile link resolves (`curl -sL -o /dev/null -w '%{http_code}\n' <url>` returns 200).
 
 ## Working here
 
 - Hazards:
   - The repo is public, so every commit is world-readable. Commit no internal hostnames, IPs, namespaces, Secret names or other private estate detail.
-  - The pod's managed briefing (between the `BEGIN`/`END agent-fleet operating-environment briefing` comment markers) lists internal topology. In `AGENTS.md` only a best-effort `git update-index --skip-worktree` keeps it out of commits, and the briefing-only worktree `CLAUDE.md` is untracked, so `git add -A` would commit it. Stage files by name, not `git add -A`, read `git diff --cached` before committing, and never commit a `CLAUDE.md`. Never write the full BEGIN marker text into a tracked file: the pod detects its block by substring and replaces only an exact marker line, so a quoted marker blocks injection and a bare marker line can swallow the lines after it.
-  - `AGENTS.md` is the only agent-instruction file: add no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` at any depth. Claude Code (2.1.277 and later) reads `AGENTS.md` natively only when none of those exists in the working directory or any ancestor. Keep `AGENTS.md` a regular file, never a symlink: the repo-pod runtime's context converge turns a tracked context file that becomes a symlink into a regular file holding the link text, treats it as local work and stops fast-forwarding the pod clone.
-  - Add no `workflow-templates/` or org-default community health files here. GitHub offers or applies them to every org repo that lacks its own file, so each one is an org-wide change, and the estate lane map excludes them from this repo. CI for this repo is `ci/check.sh`; a self-hosted runner workflow will call it.
+  - Stage files by name, not `git add -A`, read `git diff --cached` before committing, and never commit a `CLAUDE.md`.
+  - `AGENTS.md` is the only agent-instruction file: add no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` at any depth. Claude Code (2.1.277 and later) reads `AGENTS.md` natively only when none of those exists in the working directory or any ancestor. Keep `AGENTS.md` a regular file, never a symlink.
+  - Add no `workflow-templates/` or org-default community health files here. GitHub offers or applies them to every org repo that lacks its own file, so each one is an org-wide change, and the estate lane map excludes them from this repo.
 - Focused commands:
-  - `ci/check.sh` runs the CI check locally (every change).
-  - `git ls-files -s AGENTS.md` shows mode `100644`, and `git ls-files | grep -E '(^|/)CLAUDE(\.local)?\.md$'` prints nothing (guidance edits; both read the index, so the pod's appended briefing and its untracked `CLAUDE.md` do not show).
+  - `ci/check.sh` runs the pre-commit check (every change).
+  - `git ls-files -s AGENTS.md` shows mode `100644`, and `git ls-files | grep -E '(^|/)CLAUDE(\.local)?\.md$'` prints nothing (guidance edits).
