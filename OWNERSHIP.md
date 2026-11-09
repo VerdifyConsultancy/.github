@@ -8,7 +8,7 @@ This repository is **public**. This file therefore records only the ownership fa
 - Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) sections 4.1 and 4.3 (R1 to R22); standards register `docs/estate/STANDARDS.md` beside it. Both are planned to move to `jvallery/estate-platform`.
 - **How to update:** change the central entry in `jvallery/agents` and this file in the same change set (paired PRs that reference each other).
 
-Inventory snapshot: 2026-11-08 (GitHub API read during the estate convergence census). Central record status for every item matches the Status column below. The central record still reads `state: idle`, which this file keeps.
+Inventory snapshot: 2026-11-09 (GitHub API read: `pushed_at` 2026-11-09, `main` protected with linear history, no force pushes or deletions and no required check; secret scanning and push protection enabled). Central record status for every item matches the Status column below. The central record still reads `state: idle`, which this file keeps.
 
 ## Summary by kind
 
@@ -22,7 +22,7 @@ Inventory snapshot: 2026-11-08 (GitHub API read during the estate convergence ce
 
 | Id | Name | Where | What | State | Source of truth | Health | Critical dependencies | Status / action |
 |---|---|---|---|---|---|---|---|---|
-| `repo:verdifyconsultancy/.github` | VerdifyConsultancy/.github | github.com/VerdifyConsultancy/.github (public, default branch `main`), rendered at https://github.com/VerdifyConsultancy | Org profile README (`profile/README.md`) and this repo's `AGENTS.md` | idle (last push 2026-11-06) | this repo `AGENTS.md`; content `profile/README.md` | none (no GitHub Actions workflows and no status checks; `main` protected with linear history and no force pushes or deletions, no required check; `ci/check.sh` is operator-run) | `jvallery/agents` registry record (`desired_state: ci-only`), planned to retire with `jvallery/agents`; profile wording sourced from `jvallery/verdify-www`; lab links to `jvallery/verdify-platform` | owned. No workflow or required check is planned (no VerdifyConsultancy runner set). |
+| `repo:verdifyconsultancy/.github` | VerdifyConsultancy/.github | github.com/VerdifyConsultancy/.github (public, default branch `main`), rendered at https://github.com/VerdifyConsultancy | Org profile README (`profile/README.md`) and this repo's `AGENTS.md` | idle (last push 2026-11-09) | this repo `AGENTS.md`; content `profile/README.md` | none (no GitHub Actions workflows and no status checks; `main` protected with linear history and no force pushes or deletions, no required check; `ci/check.sh` is operator-run) | `jvallery/agents` registry record (`desired_state: ci-only`), planned to retire with `jvallery/agents`; profile wording sourced from `jvallery/verdify-www`; lab links to `jvallery/verdify-platform` | owned. No workflow or required check is planned (no VerdifyConsultancy runner set). |
 
 ## Coverage gaps
 
