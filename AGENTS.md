@@ -38,7 +38,7 @@ Change these in their owner, not here. Lane map and rules: `jvallery/agents` [`d
 
 - Verdify positioning, service names and the verdify.ai pages the profile links to → `jvallery/verdify-www` (service names in `src/data/site-shell.ts`, routes under `src/pages/`). Take profile wording from there rather than writing new copy here.
 - Verdify Lab (https://lab.verdify.ai) and its greenhouse and control-loop claims → `jvallery/verdify-platform`. The profile links to the lab; architecture detail stays there.
-- This repo's registry record in `jvallery/agents` (`desired_state: ci-only`) and the catalog rows derived from it. Native fleet CI is retired and `.agent-fleet/ci.yaml` was deleted here (#8); the record itself is planned to retire with `jvallery/agents`, not to move.
+- This repo's registry record in `jvallery/agents` (`desired_state: ci-only`) and the catalog rows derived from it. Native fleet CI is retired and its generated CI spec was deleted here (#8); the record itself is planned to retire with `jvallery/agents`, not to move.
 - Organization-level GitHub state (rulesets, branch protection, App installations, org Actions secrets) → `jvallery/agents` today, with the governance baseline planned to move to `jvallery/estate-platform`. That includes org settings and membership, and the accepted exceptions recorded there (agents#5145). Do not change org settings, 2FA enforcement or membership from this repo.
 - Issue and PR templates, CONTRIBUTING, SECURITY and CODE_OF_CONDUCT → each repo keeps its own.
 

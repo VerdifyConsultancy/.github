@@ -1,4 +1,3 @@
 
-# Agent instructions live in AGENTS.md only (estate rule R22). The repo-pod runtime may write a
-# briefing-only CLAUDE.md into the worktree until its runtime change ships; never commit it.
+# Agent instructions live in AGENTS.md only (estate rule R22); never commit a CLAUDE.md.
 CLAUDE.md
