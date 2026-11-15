@@ -26,7 +26,7 @@ Jason's direct request authorizes the work it describes, across code, infrastruc
 
 ## Owns
 
-Per-item detail is in [`OWNERSHIP.md`](OWNERSHIP.md); the one-owner-per-item record is the [central estate inventory](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/ESTATE-INVENTORY.md) in `jvallery/agents`, with this repository's [owner page](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/estate/VerdifyConsultancy__.github.md). Change both in the same change set. The ownership record and its render path are planned to move to `jvallery/estate-platform` when `jvallery/agents` retires; until that lands, they stay in `jvallery/agents`.
+Per-item detail is in [`OWNERSHIP.md`](OWNERSHIP.md); the one-owner-per-item record is the [central estate inventory](https://github.com/jvallery/estate-platform/blob/main/docs/estate/ESTATE-INVENTORY.md), with this repository's [owner page](https://github.com/jvallery/estate-platform/blob/main/docs/estate/inventory/VerdifyConsultancy__.github.md). Change both in the same change set.
 
 - `profile/README.md`, the public org landing page.
 - This guidance: `AGENTS.md`, the only agent-instruction file. Claude Code and Codex both read it natively; the repo tracks no `CLAUDE.md`.
@@ -44,7 +44,7 @@ Change these in their owner, not here. Lane map and rules: `jvallery/agents` [`d
 
 ## Backlog and standards
 
-The estate standards register is `docs/estate/STANDARDS.md` in `jvallery/agents` (planned to move to `jvallery/estate-platform`); cite its `STD-` clause ids rather than copying them. Waves are milestones (`W1 Convergence foundations` to `W5 BCDR`), with matching `sprint:w1-convergence` to `sprint:w5-bcdr` labels and one domain label (`conv`, `cicd`, `obs`, `sec`, `ha`, `dr`). Estate epics are issues labeled `epic` in `jvallery/estate-platform`. Every issue follows the estate issue contract (problem, dated evidence, `STD-` clause and bounded target, owner, dependencies, priority, testable acceptance, rollback), and each remediation unit has one canonical issue in the repo that owns the change.
+The estate standards register is `docs/estate/STANDARDS.md` in `jvallery/estate-platform`; cite its `STD-` clause ids rather than copying them. Waves are milestones (`W1 Convergence foundations` to `W5 BCDR`), with matching `sprint:w1-convergence` to `sprint:w5-bcdr` labels and one domain label (`conv`, `cicd`, `obs`, `sec`, `ha`, `dr`). Estate epics are issues labeled `epic` in `jvallery/estate-platform`. Every issue follows the estate issue contract (problem, dated evidence, `STD-` clause and bounded target, owner, dependencies, priority, testable acceptance, rollback), and each remediation unit has one canonical issue in the repo that owns the change.
 
 ## Deliver and verify
 
