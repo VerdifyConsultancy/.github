@@ -4,7 +4,7 @@ This repository owns the **VerdifyConsultancy org profile** lane: `profile/READM
 
 This repository is **public**. This file therefore records only the ownership facts; it carries no internal hostnames, addresses, namespaces or Secret names.
 
-- Central record (one owner per item): [docs/fleet-inventory/ESTATE-INVENTORY.md](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/ESTATE-INVENTORY.md) in `jvallery/agents` (private), rendered from its estate-ownership policy (estate rule R1). The record and its render path are planned to move to `jvallery/estate-platform` when `jvallery/agents` retires. Owner page for this repository: [docs/fleet-inventory/estate/VerdifyConsultancy__.github.md](https://github.com/jvallery/agents/blob/main/docs/fleet-inventory/estate/VerdifyConsultancy__.github.md).
+- Central record (one owner per item): [docs/estate/ESTATE-INVENTORY.md](https://github.com/jvallery/estate-platform/blob/main/docs/estate/ESTATE-INVENTORY.md), rendered from `ownership/record/` in `jvallery/estate-platform` (estate rule R1). Owner page for this repository: [inventory/VerdifyConsultancy__.github.md](https://github.com/jvallery/estate-platform/blob/main/docs/estate/inventory/VerdifyConsultancy__.github.md).
 - Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) sections 4.1 and 4.3 (R1 to R22); standards register `docs/estate/STANDARDS.md` beside it. Both are planned to move to `jvallery/estate-platform`.
 - **How to update:** change the central entry in `jvallery/agents` and this file in the same change set (paired PRs that reference each other).
 
