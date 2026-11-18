@@ -1,0 +1,45 @@
+{
+  "$schema": "https://github.com/jvallery/estate-ci/blob/main/deploy/foundation/schemas/version-register.schema.json",
+  "schema_version": 1,
+  "owner": "VerdifyConsultancy/.github",
+  "components": [
+    {
+      "component": "github-organization-profile",
+      "kind": "service",
+      "notes": "GitHub renders profile/README.md on the organization page. The repository has no workflows.",
+      "installed": {
+        "version": "GitHub.com organization profile README (profile/README.md); SaaS feature, no version",
+        "source": "profile/README.md",
+        "read_at": "2026-11-18"
+      },
+      "upstream": {
+        "project": "https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/customizing-your-organizations-profile",
+        "latest": "GitHub.com (continuously delivered)",
+        "checked": "2026-11-18"
+      },
+      "support": {
+        "policy": "rolling",
+        "source": "https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/customizing-your-organizations-profile"
+      }
+    },
+    {
+      "component": "yq",
+      "kind": "tool",
+      "notes": "Only tool ci/check.sh needs beyond git and find; the check is run by hand.",
+      "installed": {
+        "version": "unpinned (operator-installed; ci/check.sh names no version)",
+        "source": "ci/check.sh (yq eval over every YAML file)",
+        "read_at": "2026-11-18"
+      },
+      "upstream": {
+        "project": "https://github.com/mikefarah/yq/releases",
+        "latest": "v4.54.3",
+        "checked": "2026-11-18"
+      },
+      "support": {
+        "policy": "rolling",
+        "source": "https://github.com/mikefarah/yq/releases"
+      }
+    }
+  ]
+}
