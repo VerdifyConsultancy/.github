@@ -6,7 +6,7 @@ This repository is **public**. This file therefore records only the ownership fa
 
 - Central record (one owner per item): [docs/estate/ESTATE-INVENTORY.md](https://github.com/jvallery/estate-platform/blob/main/docs/estate/ESTATE-INVENTORY.md), rendered from `ownership/record/` in `jvallery/estate-platform` (estate rule R1). Owner page for this repository: [inventory/VerdifyConsultancy__.github.md](https://github.com/jvallery/estate-platform/blob/main/docs/estate/inventory/VerdifyConsultancy__.github.md).
 - Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) sections 4.1 and 4.3 (R1 to R22); standards register `docs/estate/STANDARDS.md` beside it. Both are planned to move to `jvallery/estate-platform`.
-- **How to update:** change the central entry in `jvallery/agents` and this file in the same change set (paired PRs that reference each other).
+- **How to update:** change the central entry in jvallery/estate-platform `ownership/record/` (re-render with `python3 ownership/render.py` in the same estate-platform PR) and this file in the same change set (paired PRs that reference each other).
 
 Inventory snapshot: 2026-11-11 (GitHub API read: `pushed_at` 2026-11-09T19:50Z before this change, `main` protected, secret scanning and push protection enabled). Central record status for every item matches the Status column below. The central record still reads `state: idle`, which this file keeps.
 
