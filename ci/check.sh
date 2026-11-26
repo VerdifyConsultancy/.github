@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Portable repository check: runs the same on any runner (self-hosted Actions
-# runner, Forgejo/Gitea Actions, or a laptop). Carries the organization-files
-# check that the retired fleet CI spec ran. Needs git, find and yq.
+# Local repository check: whitespace errors in the unstaged diff, conflict
+# markers outside Markdown, and a YAML parse of every *.yml and *.yaml file.
+# Needs git, grep, find and yq.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 git diff --check
-if git grep -n -E '^(<<<<<<<|=======$|>>>>>>>)' -- . ':!*.md'; then
+if grep -rInE --exclude-dir=.git --exclude='*.md' '^(<<<<<<<|=======$|>>>>>>>)' .; then
   echo "conflict markers found" >&2
   exit 1
 fi
