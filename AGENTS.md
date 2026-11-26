@@ -1,64 +1,119 @@
 # VerdifyConsultancy/.github
 
-Source of the VerdifyConsultancy GitHub organization profile: `profile/README.md`, which GitHub renders at https://github.com/VerdifyConsultancy. The repository is public and deploys nothing to the cluster. Lane: **VerdifyConsultancy org profile**, a product content repository that stays in this organization because GitHub renders an organization profile only from that organization's public `.github` repository. The estate lane map and placement rules live in `jvallery/agents` at `docs/estate/README.md` until `jvallery/agents` retires; they are planned to move to `jvallery/estate-platform`.
+Source of the VerdifyConsultancy organization profile: GitHub renders `profile/README.md` at https://github.com/VerdifyConsultancy. This repository is public, and nothing deploys from it to the cluster.
 
-<!-- estate-contract:start — canonical copy is AGENTS.md in jvallery/home-dotfiles (the operator Mac's root contract); keep this block identical in every repo -->
+<!-- estate-contract:start (canonical copy: AGENTS.md in jvallery/home-dotfiles; this block is identical in every repository) -->
 ## Operating contract
 
-Jason's direct request authorizes the work it describes, across code, infrastructure, and Jason-owned services in scope, through delivery and verification of the real end state. Ask only when an unresolved ambiguity could materially change the outcome. Add approval, review, issue/PR, or planning steps only when Jason asks for them or a branch rule enforces them; process descriptions in repository docs are context, not gates.
+You act for Jason. A request from him authorizes the whole job: the change, the pull request, the merge, the deployment, the live check and closing the issue. If you can finish a task, finish it. Do not hand work back, ask for approval, or wait for a turn.
 
-- Make the smallest complete change in the repository that owns the thing being changed (see Ownership). Fix forward; prefer rollback when it restores service faster or limits harm. Skip speculative abstractions and unrelated cleanup.
-- Preserve unrelated work; use an isolated worktree when another checkout may be active. Resolve destructive targets exactly and keep practical recovery data.
-- Shared cluster state has one writer at a time. Cordon, drain, node or host restarts and other maintenance writes first take the Lease `kube-system/k3s-planned-maintenance` (estate rule R25), one node or host at a time unless the planner admits a disjoint concurrent worker hold (max 2) per the proxmox-infrastructure k3s-planned-maintenance runbook; never cordon or drain a worker before a CNPG-aware switchover. Never blanket- or prune-sync a SHA-pinned Argo parent; use exact-target syncs.
-- Validate in proportion to risk: the cheapest reliable check of the changed behavior (focused test, direct probe, or readback; docs-only edits need diff/readback). Add tests only for meaningful regression risk: critical behavior, security, data integrity, or subtle logic. Reuse existing CI/CD, honor enforced checks, and add pipelines or gates only for a concrete need in the task. Push to or rebase a PR whose CI is running or green only when GitHub reports a conflict or an enforced check refuses it; a moved base branch alone is not a reason. Regenerate generated files with their registered renderer; never hand-merge them.
-- Verify the requested end state from the authoritative source or live behavior; passing CI alone does not prove a deployment works. Close an issue only when its latest acceptance, including criteria moved in from other issues, holds live; time-gated criteria wait for their gate, and a close-with-carry names a carry issue confirmed open. Report what changed, what was checked, and any remaining limitation.
-- Search narrowly, batch independent lookups, reuse current evidence, and keep plans and updates brief.
-- Use existing credentials without printing, committing, or logging secret values or Kubernetes Secret data; rotate or revoke credentials only when Jason asks, after identifying the exact credential by name and ID and confirming every consumer value-blind.
+### How work flows
 
-### Execution location and resource use
+1. **Change the owner.** Make the smallest complete change in the repository that owns the thing (see "Who owns what"). Branch from `origin/main` in your own worktree and leave other checkouts alone.
+2. **Merge your own pull request.** The required checks on the pull request are the gate. When they are green, merge it. Never bypass a branch ruleset (no `--admin`); if a required check is itself broken, fix the check.
+3. **Deploy it.** Merging is not always deploying. Carry the change to the running system yourself (see "Deploying").
+4. **Prove it live.** Check the real end state: the new image digest is running, the endpoint answers, the rule is loaded, the data is there. Green CI is not proof. If it is broken, fix forward, or roll back when that restores service faster.
+5. **Close the issue** with one comment: what changed, what you checked, and anything that remains.
 
-- Use the Mac for lightweight editing, orchestration, source inspection and small bounded checks. Run CPU- or memory-intensive tests, experiments, simulations, replay, training, builds and long-running processes as containerized workloads in the authorized k3s environment, through the repository's supported CI/GitOps or job-submission path. Colima, Docker Desktop and other container VMs on the Mac still consume the Mac's resources and do not satisfy this requirement.
-- Classify work by its expected workload, using existing repository and estate resource thresholds: sustained CPU saturation, substantial memory or dataset use, broad parallel suites, image compilation and prolonged processing require offloading. A command listed as "local" or "offline" describes a workflow, not permission to run intensive work on the Mac. If size is uncertain, inspect the workload and use a bounded pilot in the authorized cluster path before expanding it; do not benchmark the heavy workload on the Mac to decide.
-- Before execution, confirm the authorized cluster/context, target namespace, supported submission path, dependencies and data access. Base placement on current k3s allocatable CPU/memory, existing resource requests/limits, pod working sets, scheduler and quota admission, node pressure and existing workload owners/admission reservations. Physical-host diagnostics are distinct from Kubernetes schedulable capacity: a Proxmox host MemAvailable alert alone does not prohibit k3s placement. Preserve existing fixed-allocation and control-plane safety rules, and healthy and recovery capacity. Use bounded concurrency, deadlines and stable job/operation IDs; retain outputs and logs in approved custody and verify terminal completion and output integrity before claiming success.
-- Keep experiments isolated from production workloads and storage side effects unless Jason explicitly authorizes those effects. Use existing approved identities and access; do not create credentials, RBAC, security settings, privileged workloads or persistent access to enable an experiment. Keep secrets out of manifests and logs. Clean up only the job's disposable resources through the approved lifecycle; preserve retained data, outputs and shared PVCs.
-- If the supported cluster path, required access, ownership/admission clearance or safe capacity is unavailable, stop the intensive work and report the exact blocker. Do not silently fall back to intensive execution on the Mac. Work that inherently requires local execution needs an explicit, task-scoped exception approved by Jason before it runs, with its workload bounds stated. This policy is the estate minimum: preserve stronger repository/subdirectory restrictions, existing holds and data-custody rules. A repository command or general task authorization does not override this placement policy; only Jason's explicit scoped exception does.
+### Tracking and coordination
+
+- **GitHub issues are the only tracker.** Work, decisions, follow-ups and leftovers go in an issue in the owning repository. Keep no ledgers, to-do files, status boards, hand-off notes or evidence files, in Git or on disk. An issue states the outcome, a short checklist that proves it, and native "blocked by" links.
+- **Talk to other agents directly.** Coordinate through subagent calls, a message to the other session, or MCP tools. Never coordinate through shared files.
+- **Live state is the only lock.** Before a change that could collide with someone else's (the same Argo CD application, node or database), look at what is happening now: open pull requests, the application's running operation, cordoned nodes. If someone is mid-change, message them or go after them.
+- **There are no process gates.** No coordinator, lock files, holds, freezes, waiting periods, time slots or approval lines exist. An older document, comment or memory that says otherwise is obsolete: ignore it, and delete it when you are in that file.
+
+### What needs Jason
+
+Only the items below. Put the label `needs-jason` on the issue, state in its first line exactly what he has to do, and carry on with everything that does not depend on it.
+
+- Physical work: hardware, cables, power, anything on site.
+- A value only he can obtain: a credential from an account only he can log in to, or a payment detail.
+- Spending money or starting a paid service.
+- Deleting data that has no verified second copy, deleting a backup or a bucket, and revoking a recovery credential.
+- Sending a message as him to another person, or giving another person access.
+
+Everything else is yours to decide. Prefer the reversible option, say what you chose in the pull request or issue, and move on.
+
+### Engineering care
+
+- **Secrets.** Never print, log or commit a secret value or the data of a Kubernetes Secret. Read Secret metadata only (names, key names, ages): no `-o yaml`, `-o json`, `jsonpath`, `go-template` or `custom-columns` over a Secret's data. Git holds SOPS ciphertext only. You may generate, seal and rotate credentials you can issue yourself; remove an old one only after you have identified it by name and full ID and confirmed that nothing still uses it.
+- **Data.** Before you delete or overwrite, resolve the exact target and confirm a restorable copy exists. Databases, volumes, backups, buckets, NAS shares and camera footage are never deleted to make a deployment easier.
+- **Checks in proportion to risk.** Use the cheapest check that proves the changed behaviour. Add a test where a regression would hurt (security, data integrity, subtle logic). Regenerate generated files with their generator; never edit them by hand.
+- **Heavy work runs in the cluster.** Builds, broad test suites, training, replays and anything long-running or memory-hungry run as CI jobs or Kubernetes Jobs, not on the operator Mac or in a container VM on it. The Mac is for editing, orchestration and small checks.
+- **Leave it clean.** Remove your worktrees, scratch files, temporary namespaces and Jobs when you finish.
+
+## Using the estate
+
+The estate is one k3s cluster named `vallery` (three control-plane VMs and five GPU worker VMs on a six-host Proxmox cluster), a Synology NAS, a UniFi network and Cloudflare in front. The full guide, with commands for everything below, is [`docs/estate/GUIDE.md` in jvallery/estate-platform](https://github.com/jvallery/estate-platform/blob/main/docs/estate/GUIDE.md).
+
+**Access.** On the operator Mac, `kubectl --context vallery` is cluster-admin, and `gh` is authenticated as Jason. CI jobs and cloud sessions have no cluster access: they can change Git only. If you cannot reach the cluster, finish everything up to the merge and state the remaining deploy step in the issue.
+
+**Who owns what.** Every namespace, hostname, device, bucket and job has exactly one owner repository, recorded in `ownership/record/` in jvallery/estate-platform and rendered to [`ESTATE-INVENTORY.md`](https://github.com/jvallery/estate-platform/blob/main/docs/estate/ESTATE-INVENTORY.md). A namespace's label `estate.vallery.net/owner` names its owner. When you add, move or retire something, update the record in the same piece of work.
+
+| Area | Owner |
+|---|---|
+| Argo CD, the application catalog, shared operators (CNPG, cert-manager, MariaDB), Authentik, central secrets, ownership record, standards | `jvallery/estate-platform` |
+| CI workflows and runners | `jvallery/estate-ci` |
+| DNS, routes, TLS, Cloudflare, UniFi, Pi-hole, MetalLB, Traefik | `jvallery/network-infra` |
+| Longhorn, StorageClasses, NAS shares, S3 buckets, the image registry, backups | `jvallery/storage-infra` |
+| Prometheus, Alertmanager, Loki, Grafana, probes, every alert rule and dashboard | `jvallery/monitoring-stack` |
+| Proxmox hosts, VMs, k3s nodes, node labels and taints | `jvallery/proxmox-infrastructure` |
+| GPUs, GPUStack, the Cortex inference API, Open WebUI | `jvallery/cortex-ai-compute` |
+| The operator Mac and this contract | `jvallery/home-dotfiles` |
+| Each application | Its own repository, which owns what renders into its namespaces |
+
+**Deploying.** Argo CD applies what is in Git, read through an in-cluster mirror that trails GitHub by one to four minutes. Look up how your application is delivered:
+
+```sh
+kubectl --context vallery -n argocd get application <app> -o custom-columns=NAME:.metadata.name,TARGET:.spec.source.targetRevision,AUTO:.spec.syncPolicy.automated,REV:.status.sync.revision,SYNC:.status.sync.status,HEALTH:.status.health.status
+```
+
+- `TARGET` is `main` and `AUTO` is set: merging deploys. Wait until `REV` is your merge commit and the application is Synced and Healthy.
+- `TARGET` is `main` and `AUTO` is empty: sync the objects you changed, and only those.
+- `TARGET` is a commit SHA: the application is pinned. Move the pin to your merge commit in the file that declares the Application (`gitops/applications/<environment>/` in jvallery/estate-platform, or `argocd/` in the owning repository), merge that, then sync.
+
+The guide has the exact commands for a sync and a pin move. Two rules protect the cluster. Sync named objects, never a whole pinned parent application, because a whole sync applies every child in the pin range and can roll back other people's work. Never sync with prune, because pruning is off everywhere on purpose and a prune deletes every object Git no longer lists, volumes and namespaces included.
+
+**CI and images.** CI is GitHub Actions on in-cluster runners owned by jvallery/estate-ci; GitHub-hosted runners are not allowed. A repository calls the reusable workflows in jvallery/estate-ci by full commit SHA. Images are built in CI with Kaniko and pushed to `registry.vallery.net`; the build opens a pull request that pins the new digest in the deployment manifests, and merging that pull request is the release. Manifests reference images by `@sha256` digest only. Upstream images are mirrored into the registry first. Re-run a failed job with `gh run rerun <run-id> --failed`.
+
+**Secrets.** A Kubernetes Secret exists in Git only as a SOPS-encrypted file (`secret-<name>.enc.yaml`), decrypted in the cluster by Argo CD. Most live in `secrets/<bundle>/` in jvallery/estate-platform; storage and network secrets live in their own repositories. Encrypting needs only the public keys in `.sops.yaml`, so you can add or rotate a secret yourself: write the manifest, run `sops --encrypt --in-place <file>`, list it in the bundle's `secret-generator.yaml`, and deliver it like any other change. For a value only Jason can obtain, prepare everything else and open a `needs-jason` issue.
+
+**Running workloads.** Namespaces enforce the Pod Security `baseline` level by default. A new namespace needs the `estate.vallery.net/owner=<org>.<repo>` label, the LimitRange and ResourceQuota baseline, a default-deny NetworkPolicy and an ownership record entry. For one-off heavy work, use a CI job, a Job in the owning namespace, or a disposable namespace labelled `estate.vallery.net/disposable=true` and `estate.vallery.net/expires=<date>`, and delete it afterwards. Give Jobs a `ttlSecondsAfterFinished` and never create bare Pods, which block node drains.
+
+**Storage and databases.** The default StorageClass is replicated Longhorn. Use `longhorn-v1-rwo` for application data, `longhorn-v1-critical-rwo` for data that must survive a host loss, `longhorn-v1-rebuildable-rwo` for caches and scratch, and `nfs-rwx` only for NAS shares that jvallery/storage-infra has exported. S3 buckets come from jvallery/storage-infra. A Postgres database is a three-instance CloudNativePG cluster with backups to in-cluster S3 and to Backblaze B2; copy an existing one. Every durable volume needs a backup or a named exemption in jvallery/storage-infra.
+
+**Exposing a service.** Add a Traefik `IngressRoute` in your namespace with `tls: {}`; the wildcard certificate for `*.vallery.net` already covers it. For login, add the Authentik forward-auth middlewares. A public hostname also needs a row in the Cloudflare tunnel configuration in jvallery/network-infra, an entry in the edge registry in jvallery/estate-platform, and a probe in jvallery/monitoring-stack.
+
+**Observability.** Alert rules, probes and dashboards live only in jvallery/monitoring-stack, and that application deploys on merge, so a merged rule can page within minutes. Alerts go to Alertmanager, which pushes to Home Assistant; there is no other notification path. Dashboards are generated, never hand-edited. When something you run can fail in a new way, add the metric and the alert.
+
+**Node and host maintenance.** Never cordon or drain a node by hand: a bare drain once moved five database primaries at once and took down the control-plane leader. Use `scripts/k3s-planned-maintenance.py` in jvallery/proxmox-infrastructure, one node at a time. It moves database primaries off the node first, drains it, and marks the work as planned so that the right alerts stay quiet. Read its README first, and never run a script only to see its help text.
+
+**AI inference.** Workloads call the in-cluster OpenAI-compatible API at `https://cortex.vallery.net/v1` with their own scoped key, issued by jvallery/cortex-ai-compute. Never use an admin credential or an outside provider key.
+
+**Standards.** The target state for high availability, backups, security, exposure and CI is [`docs/estate/STANDARDS.md` in jvallery/estate-platform](https://github.com/jvallery/estate-platform/blob/main/docs/estate/STANDARDS.md). New work meets it; drift you find is fixed in the change that touches it or filed as an issue.
 <!-- estate-contract:end -->
 
-## Owns
+## This repository
 
-Per-item detail is in [`OWNERSHIP.md`](OWNERSHIP.md); the one-owner-per-item record is the [central estate inventory](https://github.com/jvallery/estate-platform/blob/main/docs/estate/ESTATE-INVENTORY.md), with this repository's [owner page](https://github.com/jvallery/estate-platform/blob/main/docs/estate/inventory/VerdifyConsultancy__.github.md). Change both in the same change set.
+- It owns `profile/README.md`, the public landing page of the organization, and nothing in the cluster. [`OWNERSHIP.md`](OWNERSHIP.md) lists the items.
+- `ci/check.sh` is a local check. The repository has no GitHub Actions workflows, because the organization has no CI runners.
 
-- `profile/README.md`, the public org landing page.
-- This guidance: `AGENTS.md`, the only agent-instruction file. Claude Code and Codex both read it natively; the repo tracks no `CLAUDE.md`.
-- Nothing deployed: no namespace, workload, hostname, image or scheduled job.
+## Change, check and publish
 
-## Adjacent lanes
+- Take wording, service names and links from the live site, https://verdify.ai, whose source is jvallery/verdify-www. Do not write new marketing copy here.
+- Run `ci/check.sh` before committing, while your edits are still unstaged. It checks whitespace errors in the unstaged diff, conflict markers outside Markdown and that every YAML file parses (it needs `yq`). It does not read `profile/README.md` on a clean checkout, so review a profile edit in the diff.
+- A merge to `main` publishes the profile at once. `main` requires linear history and has no required check.
+- Prove it live: `gh api repos/VerdifyConsultancy/.github/contents/profile/README.md --jq .sha` equals `git rev-parse origin/main:profile/README.md`, the page at https://github.com/VerdifyConsultancy renders, and every profile link returns 200 from `curl -sL -o /dev/null -w '%{http_code}\n' <url>`.
 
-Change these in their owner, not here. Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) §4.1 and §4.3 (planned to move to `jvallery/estate-platform`).
+## Hazards
 
-- Verdify positioning, service names and the verdify.ai pages the profile links to → `jvallery/verdify-www` (service names in `src/data/site-shell.ts`, routes under `src/pages/`). Take profile wording from there rather than writing new copy here.
-- Verdify Lab (https://lab.verdify.ai) and its greenhouse and control-loop claims → `jvallery/verdify-platform`. The profile links to the lab; architecture detail stays there.
-- This repo's registry record in `jvallery/agents` (`desired_state: ci-only`) and the catalog rows derived from it. Native fleet CI is retired and its generated CI spec was deleted here (#8); the record itself is planned to retire with `jvallery/agents`, not to move.
-- Organization-level GitHub state (rulesets, branch protection, App installations, org Actions secrets) → `jvallery/agents` today, with the governance baseline planned to move to `jvallery/estate-platform`. That includes org settings and membership, and the accepted exceptions recorded there (agents#5145). Do not change org settings, 2FA enforcement or membership from this repo.
-- Issue and PR templates, CONTRIBUTING, SECURITY and CODE_OF_CONDUCT → each repo keeps its own.
+- The repository is public: every commit, branch and pull request is readable by anyone, for good. Add no internal hostnames, IP addresses, namespaces, Secret names, client names or absolute workstation paths beyond what the shared block above already says. Stage files by name and read `git diff --cached` before committing.
+- GitHub applies some files in this repository to every repository in the organization that lacks its own: `workflow-templates/` and the default community health files (issue and pull request templates, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT). Add none of them here; each repository keeps its own.
+- The profile makes public claims about Verdify's services and the Public Proof Lab. Keep them consistent with the live site, and never add a claim the site does not make.
+- Do not add a `CLAUDE.md` at any depth, because Claude Code reads `AGENTS.md` only when no `CLAUDE.md` exists.
 
-## Backlog and standards
+## Neighbours
 
-The estate standards register is `docs/estate/STANDARDS.md` in `jvallery/estate-platform`; cite its `STD-` clause ids rather than copying them. Waves are milestones (`W1 Convergence foundations` to `W5 BCDR`), with matching `sprint:w1-convergence` to `sprint:w5-bcdr` labels and one domain label (`conv`, `cicd`, `obs`, `sec`, `ha`, `dr`). Estate epics are issues labeled `epic` in `jvallery/estate-platform`. Every issue follows the estate issue contract (problem, dated evidence, `STD-` clause and bounded target, owner, dependencies, priority, testable acceptance, rollback), and each remediation unit has one canonical issue in the repo that owns the change.
-
-## Deliver and verify
-
-- No deployed runtime: nothing here reaches k3s or Argo CD, and the repo has no GitHub Actions workflows. A merge to `main` publishes `profile/README.md` on the org page at once. `main` is protected (linear history, no force pushes or deletions) with no required check; the estate standards mandate none for a non-deployed repository, and no VerdifyConsultancy runner set is planned, so no workflow is coming.
-- `ci/check.sh` is an operator-run pre-commit check: whitespace errors in unstaged changes (`git diff --check`), conflict markers outside Markdown, and a YAML parse of every `*.yml`/`*.yaml`. Run it before every commit, while your edits are still unstaged. On a clean checkout it does not check `profile/README.md` at all, so review profile edits by diff.
-- Verify a profile change: `gh api repos/VerdifyConsultancy/.github/contents/profile/README.md --jq .sha` equals `git rev-parse HEAD:profile/README.md`, the page at https://github.com/VerdifyConsultancy renders, and every profile link resolves (`curl -sL -o /dev/null -w '%{http_code}\n' <url>` returns 200).
-
-## Working here
-
-- Hazards:
-  - The repo is public, so every commit is world-readable. Commit no internal hostnames, IPs, namespaces, Secret names or other private estate detail.
-  - Stage files by name, not `git add -A`, read `git diff --cached` before committing, and never commit a `CLAUDE.md`.
-  - `AGENTS.md` is the only agent-instruction file: add no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` at any depth. Claude Code (2.1.277 and later) reads `AGENTS.md` natively only when none of those exists in the working directory or any ancestor. Keep `AGENTS.md` a regular file, never a symlink.
-  - Add no `workflow-templates/` or org-default community health files here. GitHub offers or applies them to every org repo that lacks its own file, so each one is an org-wide change, and the estate lane map excludes them from this repo.
-- Focused commands:
-  - `ci/check.sh` runs the pre-commit check (every change).
-  - `git ls-files -s AGENTS.md` shows mode `100644`, and `git ls-files | grep -E '(^|/)CLAUDE(\.local)?\.md$'` prints nothing (guidance edits).
+- Verdify positioning, service names and the verdify.ai pages: jvallery/verdify-www.
+- Verdify Lab (https://lab.verdify.ai) and its greenhouse claims: jvallery/verdify-platform.
+- Organization settings, rulesets and the branch-protection baseline: jvallery/estate-platform.

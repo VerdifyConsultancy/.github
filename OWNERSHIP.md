@@ -1,35 +1,25 @@
 # OWNERSHIP: VerdifyConsultancy/.github
 
-This repository owns the **VerdifyConsultancy org profile** lane: `profile/README.md`, which GitHub renders on the organization page, and this repository's own guidance. It deploys nothing.
+This repository owns the VerdifyConsultancy organization profile: `profile/README.md`, which GitHub renders on the organization page. It deploys nothing. The repository is public, so this file states ownership only and carries no internal detail.
 
-This repository is **public**. This file therefore records only the ownership facts; it carries no internal hostnames, addresses, namespaces or Secret names.
+The central record is `ownership/record/` in jvallery/estate-platform, rendered to [ESTATE-INVENTORY.md](https://github.com/jvallery/estate-platform/blob/main/docs/estate/ESTATE-INVENTORY.md) and to [this repository's page](https://github.com/jvallery/estate-platform/blob/main/docs/estate/inventory/VerdifyConsultancy__.github.md). When an item is added, moved or retired, change the record and this file in the same piece of work.
 
-- Central record (one owner per item): [docs/estate/ESTATE-INVENTORY.md](https://github.com/jvallery/estate-platform/blob/main/docs/estate/ESTATE-INVENTORY.md), rendered from `ownership/record/` in `jvallery/estate-platform` (estate rule R1). Owner page for this repository: [inventory/VerdifyConsultancy__.github.md](https://github.com/jvallery/estate-platform/blob/main/docs/estate/inventory/VerdifyConsultancy__.github.md).
-- Lane map and rules: `jvallery/agents` [`docs/estate/README.md`](https://github.com/jvallery/agents/blob/main/docs/estate/README.md) sections 4.1 and 4.3 (R1 to R22); standards register `docs/estate/STANDARDS.md` beside it. Both are planned to move to `jvallery/estate-platform`.
-- **How to update:** change the central entry in jvallery/estate-platform `ownership/record/` (re-render with `python3 ownership/render.py` in the same estate-platform PR) and this file in the same change set (paired PRs that reference each other).
+## Owned here
 
-Inventory snapshot: 2026-11-11 (GitHub API read: `pushed_at` 2026-11-09T19:50Z before this change, `main` protected, secret scanning and push protection enabled). Central record status for every item matches the Status column below. The central record still reads `state: idle`, which this file keeps.
+| Item | What |
+|---|---|
+| `repo:verdifyconsultancy/.github` | Public repository, rendered at https://github.com/VerdifyConsultancy. |
+| `profile/README.md` | The organization profile page. |
+| `ci/check.sh` | A local whitespace, conflict-marker and YAML check. |
 
-## Summary by kind
+## Owned elsewhere
 
-| Kind | Count | Ids |
-|---|---|---|
-| repo | 1 | `repo:verdifyconsultancy/.github` |
-| **Total items** | **1** | |
-| Kubernetes objects, containers, scheduled jobs | 0 | none |
+| Thing | Owner |
+|---|---|
+| Verdify positioning, service names and the verdify.ai pages | jvallery/verdify-www |
+| Verdify Lab and its greenhouse claims | jvallery/verdify-platform |
+| Organization settings, rulesets and the branch-protection baseline | jvallery/estate-platform |
 
-## Repository
+## Known gaps
 
-| Id | Name | Where | What | State | Source of truth | Health | Critical dependencies | Status / action |
-|---|---|---|---|---|---|---|---|---|
-| `repo:verdifyconsultancy/.github` | VerdifyConsultancy/.github | github.com/VerdifyConsultancy/.github (public, default branch `main`), rendered at https://github.com/VerdifyConsultancy | Org profile README (`profile/README.md`) and this repo's `AGENTS.md` | idle (last push 2026-11-11, this docs change) | this repo `AGENTS.md`; content `profile/README.md` | none (no GitHub Actions workflows and no status checks; `main` protected with linear history and no force pushes or deletions, no required check; `ci/check.sh` is operator-run) | `jvallery/agents` registry record (`desired_state: ci-only`), planned to retire with `jvallery/agents`; profile wording sourced from `jvallery/verdify-www`; lab links to `jvallery/verdify-platform` | owned. No workflow or required check is planned (no VerdifyConsultancy runner set). |
-
-## Coverage gaps
-
-- `repo:verdifyconsultancy/.github`: no health signal. There is no runtime to probe; a broken profile link or YAML/whitespace error can reach `main` unchecked, because `ci/check.sh` is operator-run and does not read `profile/README.md` on a clean checkout. Accepted for a non-deployed repository; no new alert or workflow is proposed.
-
-## Open actions
-
-| Kind | Objects | Action | Tracking |
-|---|---|---|---|
-| retirement | `repo:verdifyconsultancy/.github` | Retire this repo's registry record and derived catalog rows in `jvallery/agents` | planned with the `jvallery/agents` retirement |
+- The repository has no CI, so a broken profile link can reach `main` unchecked; `ci/check.sh` does not read `profile/README.md` on a clean checkout.
